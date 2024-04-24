@@ -49,7 +49,6 @@ def create_gui(model_filename=None, tokenizer_filename=None):
     if model_filename is not None:
       model = tf.keras.models.load_model(model_filename)
     else:
-      # Train a new model if no model file exists
       model = tf.keras.Sequential([
           Embedding(10000, 128, input_length=256),
           LSTM(128, return_sequences=True),
@@ -58,20 +57,17 @@ def create_gui(model_filename=None, tokenizer_filename=None):
       ])
       model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
       model.fit(question_padded, answer_padded, epochs=10, batch_size=32)
-      # Save the new model
       model.save('chatbot_model.h5')  # Replace with your desired filename
 
-  # Create the menu bar
   menubar = Menu(root)
   dataset_menu = Menu(menubar, tearoff=0)
   dataset_menu.add_command(label="Dataset 1 (data.csv)", command=lambda: update_dataset("data.csv"))
-  # Add more dataset options here (data2.csv, data3.csv, etc.)
+
   dataset_menu.add_separator()
   dataset_menu.add_command(label="Exit", command=root.quit)
   menubar.add_cascade(label="Dataset", menu=dataset_menu)
   root.config(menu=menubar)
 
-  # Create the labels and entry fields for user input and answer
   user_input_label = Label(root, text='Введите вопрос:')
   user_input_label.grid(row=0, column=0, sticky='w')
 
@@ -84,5 +80,4 @@ def create_gui(model_filename=None, tokenizer_filename=None):
   answer_entry = Entry(root, state='disabled')
   answer_entry.grid(row=1, column=1, sticky='ew')
 
-  # Create the button to trigger the answer generation
   send_button = Button(root, text='Отправить',)
